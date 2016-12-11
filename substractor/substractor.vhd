@@ -19,7 +19,7 @@ architecture substractor of substractor is
 			D: out std_logic
 			);
 	end component;
-	signal B_1_2, B_2_y3, B_3_4: std_logic;
+	signal B_1_2, B_2_3, B_3_4: std_logic;
 begin
 	SUB1: full_sub port map(X => X(3), Y => Y(3), Bin => Bin,   D => D(3), Bout => B_1_2);
 	SUB2: full_sub port map(X => X(2), Y => Y(2), Bin => B_1_2, D => D(2), Bout => B_2_3);
