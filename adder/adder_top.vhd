@@ -3,11 +3,14 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 entity adder is
-	port(A, B: in std_logic_vector(3 downto 0);
+	generic(
+		N: integer := 4
+		);
+	port(A, B: in std_logic_vector(N-1 downto 0);
 		Cin: in std_logic;
-		S: out std_logic_vector(3 downto 0);
-		Cout: out std_logic);
-	
+		S: out std_logic_vector(N-1 downto 0);
+		Cout: out std_logic;
+		overflow: out std_logic);
 end entity;
 
 architecture adder_struct of adder is
@@ -18,30 +21,19 @@ architecture adder_struct of adder is
 			);
 	end component;
 	
-	signal C_1_2, C_2_3, C_3_4: std_logic;
-	signal minus_B: std_logic_vector(3 downto 0);
+	signal C: std_logic_vector(0 to N);
 	
-begin 
-	minus_b <= not B + 1;
+begin
+	C(0) <= Cin;
+	Cout <=	C(N);
+	overflow <= C(N-1) xor C(N);
 	
-	add1: full_adder port map(
-		A => A(0), B => minus_B(0), Cin => Cin,
-		S => S(0), Cout => C_1_2
-		);
-	
-	add2: full_adder port map(
-		A => A(1), B => minus_B(1), Cin => C_1_2,
-		S => S(1), Cout => C_2_3
-		);
-	
-	add3: full_adder port map(
-		A => A(2), B => minus_B(2), Cin => C_2_3,
-		S => S(2), Cout => C_3_4
-		);
-	
-	add4: full_adder port map(
-		A => A(3), B => minus_B(3), Cin => C_3_4,
-		S => S(3), Cout => Cout
-		);
+	gen_adders:
+		for I in 0 to N-1 generate
+		gen_fa : full_adder	port map(
+			A => A(I), B => B(I), Cin => C(I),
+			S => S(I), Cout => C(I+1)
+			);
+	end generate;
 	
 end architecture;
